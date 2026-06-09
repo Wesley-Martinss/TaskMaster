@@ -24,11 +24,12 @@ class TarefaViewModel : ViewModel() {
         val indice = tarefas.indexOfFirst { it.id == idAtividade }
 
         if (indice != -1) {
-            val tarefa = tarefas[indice]
-            tarefa.statusTarefa = statusNovo
+            val tarefaAtualizada = tarefas[indice].copy(
+                statusTarefa = statusNovo
+            )
 
-            tarefas[indice] = tarefa
-            TarefaRepository.atualizar(tarefa)
+            tarefas[indice] = tarefaAtualizada
+            TarefaRepository.atualizar(tarefaAtualizada)
         }
     }
 
@@ -36,11 +37,12 @@ class TarefaViewModel : ViewModel() {
         val indice = tarefas.indexOfFirst { it.id == idAtividade }
 
         if (indice != -1) {
-            val tarefa = tarefas[indice]
-            tarefa.prioridade = prioridadeNova
+            val tarefaAtualizada = tarefas[indice].copy(
+                prioridade = prioridadeNova
+            )
 
-            tarefas[indice] = tarefa
-            TarefaRepository.atualizar(tarefa)
+            tarefas[indice] = tarefaAtualizada
+            TarefaRepository.atualizar(tarefaAtualizada)
         }
     }
 }
