@@ -136,17 +136,12 @@ class MainActivity : ComponentActivity() {
                         "adicionar_tarefa"
                     ) {
 
-
                         TelaAdicionarTarefaScreen(
-
+                            viewModel = tarefaViewModel,
                             onVoltar = {
-
                                 navController.popBackStack()
-
                             }
-
                         )
-
 
                     }
 
