@@ -23,6 +23,7 @@ import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Info
 import androidx.compose.material.icons.filled.Notifications
 import androidx.compose.material.icons.filled.Warning
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
@@ -34,6 +35,7 @@ import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -64,6 +66,30 @@ fun HomeScreen(
     var statusSelecionado by remember { mutableStateOf<StatusTarefa?>(null) }
     var prioridadeSelecionada by remember { mutableStateOf<Prioridade?>(null) }
     var filtroPrazo by remember { mutableStateOf<FiltroPrazo?>(null) }
+    var tarefaParaDeletar by remember { mutableStateOf<Tarefa?>(null) }
+
+    if (tarefaParaDeletar != null) {
+        AlertDialog(
+            onDismissRequest = { tarefaParaDeletar = null },
+            title = { Text("Excluir tarefa") },
+            text = { Text("Deseja excluir \"${tarefaParaDeletar!!.titulo}\"? Essa ação não pode ser desfeita.") },
+            confirmButton = {
+                TextButton(
+                    onClick = {
+                        viewModel.deletarTarefa(tarefaParaDeletar!!.id)
+                        tarefaParaDeletar = null
+                    }
+                ) {
+                    Text("Excluir", color = androidx.compose.ui.graphics.Color(0xFFF44336))
+                }
+            },
+            dismissButton = {
+                TextButton(onClick = { tarefaParaDeletar = null }) {
+                    Text("Cancelar")
+                }
+            }
+        )
+    }
 
     val hoje = LocalDate.now()
 
@@ -211,7 +237,8 @@ fun HomeScreen(
                 modifier = Modifier.weight(1f),
                 tarefas = tarefasFiltradas,
                 viewModel = viewModel,
-                onTarefaClick = onNavegarParaDetalhes
+                onTarefaClick = onNavegarParaDetalhes,
+                onTarefaExcluir = { tarefaParaDeletar = it }
             )
         }
     }
@@ -222,7 +249,8 @@ fun cardAtividades(
     modifier: Modifier = Modifier,
     tarefas: List<Tarefa>,
     viewModel: TarefaViewModel,
-    onTarefaClick: (Tarefa) -> Unit
+    onTarefaClick: (Tarefa) -> Unit,
+    onTarefaExcluir: (Tarefa) -> Unit
 ) {
     val formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy")
     val hoje = LocalDate.now()
@@ -511,7 +539,7 @@ fun cardAtividades(
                         horizontalArrangement = Arrangement.End
                     ) {
                         OutlinedButton(
-                            onClick = {  },
+                            onClick = { onTarefaExcluir(tarefa) },
                             shape = RoundedCornerShape(10.dp),
                             colors = ButtonDefaults.outlinedButtonColors(
                                 contentColor = Color(0xFFF44336)

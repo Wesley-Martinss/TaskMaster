@@ -401,6 +401,52 @@ class TarefaViewModel(
     }
 
 
+    fun adicionarImagensNaTarefa(
+        tarefaId: Int,
+        novosPaths: List<String>
+    ) {
+
+        val tarefa = tarefas.find { it.id == tarefaId } ?: return
+
+        val atualizada = tarefa.copy(
+            imagens = tarefa.imagens + novosPaths
+        )
+
+        viewModelScope.launch {
+            repository.atualizar(atualizada)
+        }
+
+        if (tarefaSelecionada?.id == tarefaId) {
+            tarefaSelecionada = atualizada
+        }
+
+    }
+
+
+    fun removerImagemDaTarefa(
+        tarefaId: Int,
+        index: Int
+    ) {
+
+        val tarefa = tarefas.find { it.id == tarefaId } ?: return
+
+        val novasImagens = tarefa.imagens
+            .toMutableList()
+            .also { it.removeAt(index) }
+
+        val atualizada = tarefa.copy(imagens = novasImagens)
+
+        viewModelScope.launch {
+            repository.atualizar(atualizada)
+        }
+
+        if (tarefaSelecionada?.id == tarefaId) {
+            tarefaSelecionada = atualizada
+        }
+
+    }
+
+
     suspend fun proximoId(): Int {
 
 
