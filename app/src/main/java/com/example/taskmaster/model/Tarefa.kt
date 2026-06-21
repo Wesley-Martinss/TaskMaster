@@ -27,6 +27,8 @@ data class Tarefa(
     var dataInicio: LocalDate?,
 
     @Serializable(with = LocalDateSerializer::class)
-    var dataFinal: LocalDate?
+    var dataFinal: LocalDate?,
+
+    var imagens: List<String> = emptyList()
 
 )
